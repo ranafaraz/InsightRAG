@@ -150,7 +150,18 @@ python -m eval_harness.harness     # regenerates eval_harness/RESULTS.md
 | Prompt-injection detection | 1.000 | 1.000 | 1.000 | 1.000 |
 | PII redaction | — | — | — | 1.000 |
 
-> These come from the deterministic offline backends, so they regenerate identically on any machine. The hashing embedder is bag-of-words, so the BM25-vs-dense gap is intentionally small here; with `sentence-transformers` + `cross-encoder` the dense and rerank legs pull further ahead (re-run the harness with those env vars to see it). The CI **eval gate** (`eval_harness/gate.py`) fails the build if recall@5, faithfulness, injection-F1 or PII accuracy regress.
+> These come from the deterministic offline backends, so they regenerate identically on any machine. The hashing embedder is bag-of-words, so the BM25-vs-dense gap is intentionally small here. The CI **eval gate** (`eval_harness/gate.py`) fails the build if recall@5, faithfulness, injection-F1 or PII accuracy regress.
+
+**With real models** (`sentence-transformers` BGE + `cross-encoder` MiniLM — full table in [`eval_harness/RESULTS_real_models.md`](eval_harness/RESULTS_real_models.md)):
+
+| Configuration | Recall@3 | Recall@5 | MRR |
+|---|---|---|---|
+| BM25 only | 1.000 | 1.000 | 0.944 |
+| Dense only | 1.000 | 1.000 | **1.000** |
+| Hybrid (BM25+dense) | 1.000 | 1.000 | **1.000** |
+
+Semantic dense retrieval lifts **MRR from 0.944 → 1.000** — it ranks the right passage first on the queries BM25 gets *close* but not first. Regenerate with:
+> `EMBEDDING_BACKEND=sentence-transformers RERANK_BACKEND=cross-encoder python -m eval_harness.harness`
 
 ---
 
