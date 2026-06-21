@@ -1,0 +1,16 @@
+# One-command run:  docker compose up --build
+# API on http://localhost:8000  (docs at /docs)
+#
+# To use real local models, run Ollama on the host and switch the backends:
+#   LLM_BACKEND=ollama OLLAMA_BASE_URL=http://host.docker.internal:11434
+services:
+  api:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      EMBEDDING_BACKEND: ${EMBEDDING_BACKEND:-hash}
+      RERANK_BACKEND: ${RERANK_BACKEND:-lexical}
+      LLM_BACKEND: ${LLM_BACKEND:-stub}
+      VECTOR_STORE: ${VECTOR_STORE:-memory}
+    restart: unless-stopped

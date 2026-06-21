@@ -1,0 +1,48 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.10", "3.11", "3.12"]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+
+      - name: Install (offline/deterministic stack only)
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e ".[dev]"
+
+      - name: Lint
+        run: ruff check .
+
+      - name: Run tests
+        # Force the deterministic offline backends: no model downloads, no API keys.
+        env:
+          EMBEDDING_BACKEND: hash
+          RERANK_BACKEND: lexical
+          LLM_BACKEND: stub
+          VECTOR_STORE: memory
+        run: pytest -q --cov=rag --cov=guardrails --cov=eval_harness --cov-report=term-missing
+
+      - name: Eval gate (faithfulness & injection F1 must not regress)
+        env:
+          EMBEDDING_BACKEND: hash
+          RERANK_BACKEND: lexical
+          LLM_BACKEND: stub
+          VECTOR_STORE: memory
+        run: python -m eval_harness.gate
