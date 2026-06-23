@@ -19,20 +19,11 @@ jobs:
         run: |
           git config --global user.name "Rana Faraz"
           git config --global user.email "faraz.ahmed@iub.edu.pk"
-          mkdir wiki-dir && cd wiki-dir
+          mkdir wiki-dir
+          cd wiki-dir
           git init
           git remote add origin "https://x-access-token:${GH_TOKEN}@github.com/${WIKI_REPO}.git"
-          cat > Home.md << 'EOF'
-# InsightRAG
-
-Production-grade agentic RAG: hybrid retrieval, cross-encoder reranking, grounded answers with citations, offline-first.
-
-## Wiki pages
-- [Architecture](Architecture)
-- [Evaluation](Evaluation)
-- [Configuration](Configuration)
-- [Development](Development)
-EOF
+          printf '# InsightRAG\n\nProduction-grade agentic RAG: hybrid retrieval, cross-encoder reranking, grounded answers with citations, offline-first.\n\n## Wiki pages\n- [Architecture](Architecture)\n- [Evaluation](Evaluation)\n- [Configuration](Configuration)\n- [Development](Development)\n' > Home.md
           git add .
           git commit -m "Initialize wiki"
           git push origin HEAD:master --force
