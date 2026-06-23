@@ -1,0 +1,38 @@
+name: Bootstrap Wiki
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/bootstrap-wiki.yml']
+
+permissions:
+  contents: write
+
+jobs:
+  bootstrap-wiki:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Bootstrap wiki
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          WIKI_REPO: ${{ github.repository }}.wiki
+        run: |
+          git config --global user.name "Rana Faraz"
+          git config --global user.email "faraz.ahmed@iub.edu.pk"
+          mkdir wiki-dir && cd wiki-dir
+          git init
+          git remote add origin "https://x-access-token:${GH_TOKEN}@github.com/${WIKI_REPO}.git"
+          cat > Home.md << 'EOF'
+# InsightRAG
+
+Production-grade agentic RAG: hybrid retrieval, cross-encoder reranking, grounded answers with citations, offline-first.
+
+## Wiki pages
+- [Architecture](Architecture)
+- [Evaluation](Evaluation)
+- [Configuration](Configuration)
+- [Development](Development)
+EOF
+          git add .
+          git commit -m "Initialize wiki"
+          git push origin HEAD:master --force
