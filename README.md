@@ -1,5 +1,9 @@
 # 🔎 InsightRAG
 
+[![Live demo](https://img.shields.io/badge/live%20demo-insightrag.dexdevs.com-brightgreen?logo=rocket)](https://insightrag.dexdevs.com)
+
+> **▶ Live demo: [insightrag.dexdevs.com](https://insightrag.dexdevs.com)** — run it in your browser, free offline backend. Browse all 10 portfolio demos via the *all demos* link.
+
 **Production-grade, agentic RAG over your own documents** — hybrid retrieval (BM25 + dense), cross-encoder reranking, grounded answers *with citations*, RAGAS-style evaluation, and safety guardrails. **Runs fully offline and free by default** (no API key, no GPU), and swaps to real local or hosted models with a single environment variable.
 
 [![CI](https://github.com/ranafaraz/InsightRAG/actions/workflows/ci.yml/badge.svg)](https://github.com/ranafaraz/InsightRAG/actions/workflows/ci.yml)
